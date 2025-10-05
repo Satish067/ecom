@@ -43,59 +43,86 @@ body { margin: 0; font-family: sans-serif; background: #f6f7fb; }
   }
 }
 
-/* Mobile layout */
+/* ---------- OPTIMIZED MOBILE VIEW (<=600px) ---------- */
 @media (max-width: 600px) {
   .ecom-layout {
-    display: block;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    align-items: start;
   }
 
-  /* Sidebar becomes top bar */
+  /* Sidebar - smaller but scrollable */
   .ecom-sidebar {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 12px;
-    margin-bottom: 16px;
-    padding: 10px;
-    text-align: center;
-  }
-
-  .ecom-sidebar ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    width: 55px;
+    padding: 3px;
+    border-radius: 10px;
+    background: linear-gradient(160deg, #000, #3a1c1c, #2e003e);
+    animation: sidebarGradient 10s ease infinite;
+    overflow-y: auto;
+    height: 100vh;
+    position: sticky;
+    top: 0;
   }
 
   .ecom-sidebar li {
-    padding: 6px 10px;
-    font-size: 13px;
+    font-size: 7px;
+    padding: 4px;
+    text-align: center;
+    border-radius: 4px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
   }
 
-  /* Product grid single column */
+  .ecom-sidebar li.active,
+  .ecom-sidebar li:hover {
+    background: linear-gradient(135deg, #ffb347, #ffcc33);
+    transform: scale(1.03);
+  }
+
+  /* Product grid - compact 2x2 layout */
   .ecom-grid {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 6px;
+    justify-items: center;
   }
 
-  /* Brand + Search stack */
-  .ecom-header {
+  .ecom-card {
+    width: 92%;
+    height: 160px;
+    padding: 4px;
+    border-radius: 10px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    justify-content: space-between;
   }
 
-  .brand-title {
-    font-size: 22px;
+  .ecom-thumb img {
+    height: 65px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  .ecom-name {
+    font-size: 9px;
+    line-height: 1.1;
     text-align: center;
   }
 
-  .ecom-input {
-    width: 100%;
-    font-size: 14px;
-    padding: 8px;
+  .ecom-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    margin-top: 2px;
   }
 
-  .search-icon {
-    font-size: 16px;
+  .ecom-buy {
+    font-size: 8px;
+    padding: 3px;
+    margin-top: 2px;
+    border-radius: 6px;
   }
 }
 

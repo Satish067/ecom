@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import MOCK_PRODUCTS from "./mock_products";
 import offer1 from "./assets/offer1.jpg";
 import offer2 from "./assets/offer2.jpg";
 import offer3 from "./assets/offer3.jpg";
+import p1 from "./assets/p1.jpg";
 
 
 /**
@@ -46,42 +48,24 @@ const MOCK_CATEGORIES = [
   { id: "mens_kick", name: "Men’s Kick" },
   { id: "wallet", name: "Wallet" },
   { id: "belt", name: "Belt" },
-  { id: "handbags", name: "Hand Bags" },
-  { id: "backpacks", name: "Bag Packs" },
-  { id: "purse", name: "Purse" },
+   { id: "handbags", name: "Hand Bag" },
+   { id: "backpacks", name: "BackPacks" },
+  { id: "purse", name: "Purses" },
   { id: "jackets", name: "Jackets" },
   { id: "pants", name: "Pants" },
   { id: "perfume_women", name: "Perfume for Women" },
   { id: "perfume_men", name: "Perfume for Men" },
   { id: "perfume_combo", name: "Perfume Combo" },
   { id: "mens_watch", name: "Men’s Watch" },
-  { id: "womens_watch", name: "Women Watch" },
-  { id: "sunglasses", name: "Sunglasses" },
+  { id: "womens_watch", name: "Women’s Watch" },
+  { id: "sunglasses", name: "Men’s Sunglasses" },
   { id: "ladies_sunglasses", name: "Ladies Sunglasses" },
   { id: "frames", name: "Frames" },
 ];
 
 /* ----------------- Products ----------------- */
 /* You can replace this array with real API data later */
-const MOCK_PRODUCTS = [
-  { id: "p1", name: "Women’s Running Shoes", price: 2499, rating: 4.5, category: "womens_kick"},
-  { id: "p2", name: "Men’s Casual Sneakers", price: 2999, rating: 4.3, category: "mens_kick"},
-  { id: "p3", name: "Leather Wallet", price: 999, rating: 4.6, category: "wallet"},
-  { id: "p4", name: "Classic Brown Belt", price: 799, rating: 4.2, category: "belt"},
-  { id: "p5", name: "Designer Hand Bag", price: 3499, rating: 4.7, category: "handbags"},
-  { id: "p6", name: "Travel Backpack", price: 1999, rating: 4.4, category: "backpacks"},
-  { id: "p7", name: "Ladies Purse", price: 1299, rating: 4.3, category: "purse"},
-  { id: "p8", name: "Winter Jacket", price: 3999, rating: 4.5, category: "jackets"},
-  { id: "p9", name: "Slim Fit Pants", price: 1599, rating: 4.2, category: "pants"},
-  { id: "p10", name: "Floral Perfume for Women", price: 1799, rating: 4.6, category: "perfume_women"},
-  { id: "p11", name: "Woody Perfume for Men", price: 1999, rating: 4.4, category: "perfume_men"},
-  { id: "p12", name: "Perfume Gift Combo", price: 2999, rating: 4.7, category: "perfume_combo"},
-  { id: "p13", name: "Men’s Analog Watch", price: 2499, rating: 4.5, category: "mens_watch"},
-  { id: "p14", name: "Women’s Smart Watch", price: 2699, rating: 4.6, category: "womens_watch"},
-  { id: "p15", name: "Unisex Sunglasses", price: 1499, rating: 4.3, category: "sunglasses"},
-  { id: "p16", name: "Ladies Cat Eye Sunglasses", price: 1699, rating: 4.4, category: "ladies_sunglasses"},
-  { id: "p17", name: "Stylish Frames", price: 1299, rating: 4.2, category: "frames"},
-];
+
 
 /* ----------------- Helpers ----------------- */
 const formatINR = (n) =>
@@ -120,12 +104,22 @@ useEffect(() => {
   }, []);
 
   // Filtered list (category + search)
-  const filteredProducts = allProducts.filter((p) => {
-    const matchCategory = selectedCat === "all" || p.category === selectedCat;
-    const q = query.trim().toLowerCase();
-    const matchQuery = !q || p.name.toLowerCase().includes(q);
-    return matchCategory && matchQuery;
-  });
+ const filteredProducts = allProducts.filter((p) => {
+  const q = query.trim().toLowerCase();
+
+  // normalize category to id (example: "Women’s Watch" → "womens-watch")
+  const normalize = (str) =>
+    str.toLowerCase().replace(/\s+/g, "-").replace(/[’']/g, "");
+
+  const matchCategory =
+    selectedCat === "all" || normalize(p.category) === selectedCat;
+
+  const matchQuery = !q || p.name.toLowerCase().includes(q);
+
+  return matchCategory && matchQuery;
+});
+
+
 
   // Buy now — enforces size when required, opens WhatsApp
   const handleBuyNow = (product) => {
@@ -142,7 +136,7 @@ useEffect(() => {
       `Hi, I want to buy:%0AProduct: ${product.name}%0A${selectedSize ? `Size: ${selectedSize}%0A` : ""}Price: ${formatINR(product.price)}`
     );
     // wa.me with country code +91
-    window.open(`https://wa.me/917026172617?text=${msg}`, "_blank");
+    window.open(`https://wa.me/6362141143?text=${msg}`, "_blank");
   };
 
   // remember size selection
@@ -217,8 +211,7 @@ useEffect(() => {
   >
     🔍
   </span>
-</div>
-
+              </div>
 
 </header>
 
@@ -244,37 +237,59 @@ useEffect(() => {
 
 
 
+
      {/* --- Layout with Sidebar + Products --- */}
 <div className="ecom-layout">
   
   {/* Product Grid */}
-  <main className="ecom-main">
-    <section className="ecom-grid">
-      {filteredProducts.map((p, i) => {
-        const sizeOptions = SIZE_OPTIONS[p.category];
-        return (
-         <article key={p.id} className="ecom-card fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
-  <div className="card-inner">
-    <div className="ecom-thumb">
-      <img src={`/products/${p.id}.jpg`} alt={p.name} />
-    </div>
-    <div className="ecom-info">
-      <h4 className="ecom-name">{p.name}</h4>
-      <div className="ecom-meta">
-        <span className="ecom-price">{formatINR(p.price)}</span>
-        <span className="ecom-rate">★ {p.rating}</span>
-      </div>
-      </div>
+<main className="ecom-main">
+  {MOCK_CATEGORIES.filter(c => c.id !== "all").map((cat) => {
+    const productsInCat = allProducts.filter((p) => p.category.toLowerCase() === cat.name.toLowerCase());
 
-              <button className="ecom-buy" onClick={() => handleBuyNow(p)}>
-                Buy Now
-              </button>
+    if (productsInCat.length === 0) return null;
+
+    return (
+      <section key={cat.id} className="category-section">
+        {/* Category heading */}
+        <h2 className="category-heading">{cat.name}</h2>
+
+        {/* Category-specific mini offer carousel */}
+        <div className="offer-carousel mini">
+          {OFFERS.map((offer, i) => (
+            <div key={offer.id} className={`offer-slide ${i === activeSlide ? "active" : ""}`}>
+              <img src={offer.img} alt={offer.text} />
+              <div className="offer-text">{offer.text}</div>
             </div>
-          </article>
-        );
-      })}
-    </section>
-  </main>
+          ))}
+        </div>
+
+        {/* Product grid */}
+        <div className="ecom-grid">
+          {productsInCat.map((p, i) => (
+            <article key={p.id} className="ecom-card fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
+              <div className="card-inner">
+                <div className="ecom-thumb">
+                  <img src={`/public/products/${p.id}.jpg`} alt={p.name} />
+                </div>
+                <div className="ecom-info">
+                  <h4 className="ecom-name">{p.name}</h4>
+                  <div className="ecom-meta">
+                    <span className="ecom-price">{formatINR(p.price)}</span>
+                    <span className="ecom-rate">★ {p.rating}</span>
+                  </div>
+                </div>
+                <button className="ecom-buy" onClick={() => handleBuyNow(p)}>
+                  Buy Now
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    );
+  })}
+</main>
+
 </div>
 
 
@@ -428,19 +443,90 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
   padding: 20px;
 }
 
-/* Mobile: 2 per row */
+/* ---------- OPTIMIZED MOBILE VIEW (<=600px) ---------- */
 @media (max-width: 600px) {
+  .ecom-layout {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    align-items: start;
+  }
+
+  /* Sidebar - smaller but scrollable */
+  .ecom-sidebar {
+    width: 55px;
+    padding: 3px;
+    border-radius: 10px;
+    background: linear-gradient(160deg, #000, #3a1c1c, #2e003e);
+    animation: sidebarGradient 10s ease infinite;
+    overflow-y: auto;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+
+  .ecom-sidebar li {
+    font-size: 7px;
+    padding: 4px;
+    text-align: center;
+    border-radius: 4px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .ecom-sidebar li.active,
+  .ecom-sidebar li:hover {
+    background: linear-gradient(135deg, #ffb347, #ffcc33);
+    transform: scale(1.03);
+  }
+
+  /* Product grid - compact 2x2 layout */
   .ecom-grid {
-    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 6px;
+    justify-items: center;
+  }
+
+  .ecom-card {
+    width: 92%;
+    height: 160px;
+    padding: 4px;
+    border-radius: 10px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .ecom-thumb img {
+    height: 65px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  .ecom-name {
+    font-size: 9px;
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  .ecom-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    margin-top: 2px;
+  }
+
+  .ecom-buy {
+    font-size: 8px;
+    padding: 3px;
+    margin-top: 2px;
+    border-radius: 6px;
   }
 }
 
-/* Desktop: 3 per row */
-@media (min-width: 601px) {
-  .ecom-grid {
-    grid-template-columns: repeat(3, minmax(200px, 1fr));
-  }
-}
+
 
 
 /* Product Card */
@@ -910,6 +996,25 @@ body {
   border: 2px solid #FFD700;  /* 🔥 gold border highlight */
 }
 
+.category-section {
+  margin-bottom: 60px;
+}
+
+.category-heading {
+  font-size: 2rem;
+  text-align: center;
+  margin: 30px 0 15px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #8B4513, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.offer-carousel.mini {
+  height: 180px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
 
 
 
@@ -1084,6 +1189,8 @@ body {
   color: #111;
   margin-bottom: 10px;
 }
+
+
 
 /* ---------- GLOBAL / BACKGROUND ---------- */
 html, body, #root, .app-wrapper {
