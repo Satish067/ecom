@@ -3,6 +3,7 @@ import MOCK_PRODUCTS from "./mock_products";
 import offer1 from "./assets/offer1.jpg";
 import offer2 from "./assets/offer2.jpg";
 import offer3 from "./assets/offer3.jpg";
+import './styles.css';
 import p1 from "./assets/p1.jpg";
 
 
@@ -17,9 +18,9 @@ import p1 from "./assets/p1.jpg";
  */
 
 const OFFERS = [
-  { id: 1, img: offer1, text: "🔥 Flat 50% Off on Shoes" },
-  { id: 2, img: offer2, text: "🎉 New Arrivals – Bags & Purses" },
-  { id: 3, img: offer3, text: "✨ Perfume Combo Deals" },
+  { id: 1, img: offer1, text: "🔥 Flat 50% Off on All Watches" },
+  { id: 2, img: offer2, text: "🎉 New Arrivals Bags & Purses" },
+  { id: 3, img: offer3, text: "✨ New Release Sneakers" },
 ];
 
 
@@ -122,22 +123,17 @@ useEffect(() => {
 
 
   // Buy now — enforces size when required, opens WhatsApp
-  const handleBuyNow = (product) => {
-    const sizeOptions = SIZE_OPTIONS[product.category];
-    const selectedSize = sizes[product.id];
+const handleBuyNow = (product, selectedSize) => {
+  const msg = `Hi, I want to buy a product:\n${product.name}\n${
+    selectedSize ? `Size: ${selectedSize}\n` : ""
+  }Price: ₹${product.price}`;
+  
+  const encodedMsg = encodeURIComponent(msg);
+  const phoneNumber = "916362141143"; // ✅ no '+' before the number in wa.me
 
-    if (sizeOptions && !selectedSize) {
-      // mandatory size
-      alert("Please select a size before buying.");
-      return;
-    }
+  window.open(`https://wa.me/${phoneNumber}?text=${encodedMsg}`, "_blank");
+};
 
-    const msg = encodeURIComponent(
-      `Hi, I want to buy:%0AProduct: ${product.name}%0A${selectedSize ? `Size: ${selectedSize}%0A` : ""}Price: ${formatINR(product.price)}`
-    );
-    // wa.me with country code +91
-    window.open(`https://wa.me/6362141143?text=${msg}`, "_blank");
-  };
 
   // remember size selection
   const setProductSize = (productId, value) => {
@@ -254,7 +250,7 @@ useEffect(() => {
         <h2 className="category-heading">{cat.name}</h2>
 
         {/* Category-specific mini offer carousel */}
-        <div className="offer-carousel mini">
+{/*         <div className="offer-carousel mini">
           {OFFERS.map((offer, i) => (
             <div key={offer.id} className={`offer-slide ${i === activeSlide ? "active" : ""}`}>
               <img src={offer.img} alt={offer.text} />
@@ -262,7 +258,7 @@ useEffect(() => {
             </div>
           ))}
         </div>
-
+ */}
         {/* Product grid */}
         <div className="ecom-grid">
           {productsInCat.map((p, i) => (
@@ -274,7 +270,8 @@ useEffect(() => {
                 <div className="ecom-info">
                   <h4 className="ecom-name">{p.name}</h4>
                   <div className="ecom-meta">
-                    <span className="ecom-price">{formatINR(p.price)}</span>
+                       <span className="original-price">₹{p.originalPrice}</span>{" "}
+                       <span className="discount-price">₹{p.price}</span>
                     <span className="ecom-rate">★ {p.rating}</span>
                   </div>
                 </div>
@@ -328,6 +325,13 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
   border-radius: 16px;
   box-shadow: var(--shadow);
 }
+
+@media (max-width: 768px) {
+  .offer-carousel {
+    height: 150px;   /* ↓ reduce the height for mobile view */
+  }
+}
+
 
 .offer-slide {
   position: absolute;
@@ -447,14 +451,14 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 @media (max-width: 600px) {
   .ecom-layout {
     display: grid;
-    grid-template-columns: 60px 1fr;
+    grid-template-columns: 55px 1fr;
     align-items: start;
   }
 
-  /* Sidebar - smaller but scrollable */
+  /* Sidebar */
   .ecom-sidebar {
-    width: 55px;
-    padding: 3px;
+    width: 50px;
+    padding: 2px;
     border-radius: 10px;
     background: linear-gradient(160deg, #000, #3a1c1c, #2e003e);
     animation: sidebarGradient 10s ease infinite;
@@ -466,8 +470,9 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 
   .ecom-sidebar li {
     font-size: 7px;
-    padding: 4px;
+    padding: 3px;
     text-align: center;
+    margin: 2px 0;
     border-radius: 4px;
     color: #fff;
     background: rgba(255, 255, 255, 0.1);
@@ -476,55 +481,57 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
   .ecom-sidebar li.active,
   .ecom-sidebar li:hover {
     background: linear-gradient(135deg, #ffb347, #ffcc33);
-    transform: scale(1.03);
+    transform: scale(1.05);
   }
 
-  /* Product grid - compact 2x2 layout */
+  /* Product grid */
   .ecom-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-    padding: 6px;
+    gap: 4px;
+    padding: 4px;
     justify-items: center;
   }
 
   .ecom-card {
-    width: 92%;
-    height: 160px;
-    padding: 4px;
-    border-radius: 10px;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    width: 95%;
+    height: 130px; /* Smaller height for full 2x2 fit */
+    padding: 3px;
+    border-radius: 8px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
 
   .ecom-thumb img {
-    height: 65px;
+    height: 55px; /* Smaller image */
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: 4px;
   }
 
   .ecom-name {
-    font-size: 9px;
-    line-height: 1.1;
+    font-size: 8px;
     text-align: center;
+    line-height: 1.1;
+    margin-top: 1px;
   }
 
   .ecom-meta {
     display: flex;
     justify-content: space-between;
-    font-size: 8px;
-    margin-top: 2px;
+    font-size: 7px;
+    margin: 0 2px;
   }
 
   .ecom-buy {
-    font-size: 8px;
-    padding: 3px;
-    margin-top: 2px;
-    border-radius: 6px;
+    font-size: 7px;
+    padding: 2px;
+    margin-top: 1px;
+    border-radius: 4px;
   }
 }
+
 
 
 
@@ -1441,6 +1448,220 @@ margin-bottom:20px;
   .ecom-input{width:100%}
   .ecom-root{padding:12px}
 }
+
+/* ---------- MOBILE VIEW (<=600px) ---------- */
+@media (max-width: 600px) {
+  /* Overall layout */
+  .ecom-layout {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .ecom-sidebar {
+    width: 60px;
+    min-width: 60px;
+    background: linear-gradient(160deg, #000, #3a1c1c, #2e003e);
+    animation: sidebarGradient 10s ease infinite;
+    height: 100vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    border-radius: 10px;
+  }
+
+  .ecom-main {
+    flex: 1;
+    width: calc(100% - 60px);
+    padding: 4px;
+  }
+
+  /* Grid for 2x2 layout */
+ .ecom-grid {
+  display: grid;
+  gap: 70px;
+}
+
+@media (max-width: 768px) {
+  .ecom-grid {
+    grid-template-columns: repeat(2, 1fr); /* ✅ ensures 2 per row */
+    justify-items: center; /* ✅ centers each card */
+  }
+
+  .ecom-card {
+    max-width: 170px; /* ✅ controls card width */
+    height: 190px;
+  }
+}
+
+
+  /* Product cards */
+  .ecom-card {
+    width: 150%;
+    max-width: 160px;
+    height: 205px;
+    padding: 6px;
+    background: #fffaf5;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .ecom-thumb img {
+    width: 100%;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  .ecom-name {
+    font-size: 10px;
+    text-align: center;
+    margin-top: 3px;
+    line-height: 1.2;
+  }
+
+  .ecom-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    margin: 2px 3px;
+  }
+
+  .ecom-buy {
+    font-size: 9px;
+    padding: 3px;
+    border-radius: 5px;
+    margin-top: 3px;
+  }
+}
+
+/* ======= PERFECTLY CENTERED 2x2 PRODUCT GRID (MOBILE) ======= */
+@media (max-width: 768px) {
+  .ecom-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    justify-content: center;
+    align-items: start;
+    margin: 0 auto;
+    padding: 10px 12px 10px 50px; /* ✅ shifted slightly right to center */
+    width: calc(100% + 15px);     /* ✅ compensate for sidebar offset */
+    box-sizing: border-box;
+  }
+
+  .ecom-card {
+    width: 45vw;
+    height: 36vh;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .ecom-thumb img {
+    width: 100%;
+    height: 50%;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .ecom-name {
+    font-size: 0.8rem;
+    text-align: center;
+    margin: 4px 0;
+  }
+
+  .ecom-buy {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    align-self: center;
+  }
+}
+
+/* === MOBILE SIDEBAR (CATEGORIES) === */
+.ecom-sidebar {
+  width: 60px;
+  min-width: 60px;
+  padding: 6px 4px;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #000, #3a1c1c, #2e003e);
+  animation: sidebarGradient 10s ease infinite;
+  height: 100vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+
+  /* ✅ center everything */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* keep items from sticking to the top */
+}
+
+.ecom-sidebar h3 {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.ecom-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.ecom-sidebar li {
+  font-size: 0.6rem;
+  text-align: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 2px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.ecom-sidebar li.active,
+.ecom-sidebar li:hover {
+  background: linear-gradient(135deg, #ffb347, #ffcc33);
+  color: #000;
+  transform: scale(1.05);
+}
+
+/* Hide categories bar completely on mobile view */
+@media (max-width: 768px) {
+  .categories-bar {
+    display: none !important;
+  }
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 14px;
+}
+
+.discount-price {
+  color: #d97706; /* gold/orange tone to match your theme */
+  font-weight: bold;
+  font-size: 16px;
+}
+
+              
+
 `}</style>
   );
 }

@@ -125,4 +125,69 @@ body { margin: 0; font-family: sans-serif; background: #f6f7fb; }
     border-radius: 6px;
   }
 }
+@media (max-width: 600px) {
+  .ecom-layout {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    align-items: start;
+  }
+
+  .ecom-sidebar {
+    width: 55px;
+    padding: 3px;
+    border-radius: 10px;
+    background: linear-gradient(160deg, #000, #3a1c1c, #2e003e);
+    animation: sidebarGradient 10s ease infinite;
+    overflow-y: auto;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+
+  .ecom-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    padding: 4px;
+    justify-items: center;
+  }
+
+  .ecom-card {
+    width: 95%;
+    height: 120px;
+    padding: 4px;
+    border-radius: 8px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .ecom-thumb img {
+    height: 55px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  .ecom-name {
+    font-size: 8px;
+    text-align: center;
+    margin: 1px 0;
+  }
+
+  .ecom-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 7px;
+    margin: 0 2px;
+  }
+
+  .ecom-buy {
+    font-size: 7px;
+    padding: 2px;
+    margin-top: 1px;
+    border-radius: 4px;
+  }
+}
 
