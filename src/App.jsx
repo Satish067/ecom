@@ -112,8 +112,8 @@ useEffect(() => {
   const normalize = (str) =>
     str.toLowerCase().replace(/\s+/g, "-").replace(/[’']/g, "");
 
-  const matchCategory =
-    selectedCat === "all" || normalize(p.category) === selectedCat;
+  const matchCategory = selectedCat === "all" || 
+    categories.find(cat => cat.id === selectedCat)?.name === p.category;
 
   const matchQuery = !q || p.name.toLowerCase().includes(q);
 
@@ -171,6 +171,13 @@ const handleBuyNow = (product, selectedSize) => {
   ))}
 </div>
 
+{/* Hamburger Button - Fixed Position */}
+<button className="hamburger-btn-fixed" onClick={() => setSidebarOpen(!sidebarOpen)}>
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
 {/* --- Header with Brand Logo + Text + Search --- */}
 <header className="ecom-header sticky">
   <div className="ecom-brand">
@@ -211,81 +218,125 @@ const handleBuyNow = (product, selectedSize) => {
 
 </header>
 
-
-
-
-{/* Categories Section below header */}
-<div className="categories-bar">
-  <h2 className="categories-title">Categories</h2>
-  <div className="categories-list">
-    {categories.map((c) => (
-      <button
-        key={c.id}
-        className={`category-chip ${selectedCat === c.id ? "active" : ""}`}
-        onClick={() => setSelectedCat(c.id)}
-      >
-        {c.name}
-      </button>
-    ))}
+{/* Mobile Categories Overlay */}
+{sidebarOpen && (
+  <div className="mobile-categories-overlay" onClick={() => setSidebarOpen(false)}>
+    <div className="mobile-categories-panel" onClick={(e) => e.stopPropagation()}>
+      <div className="panel-header">
+        <h3>Categories</h3>
+        <button className="close-btn" onClick={() => setSidebarOpen(false)}>×</button>
+      </div>
+      <div className="mobile-categories-list">
+        {categories.map((c) => (
+          <button
+            key={c.id}
+            className={`mobile-category-item ${selectedCat === c.id ? "active" : ""}`}
+            onClick={() => {
+              setSelectedCat(c.id);
+              setSidebarOpen(false);
+            }}
+          >
+            {c.name}
+          </button>
+        ))}
+      </div>
+    </div>
   </div>
-</div>
+)}
 
 
 
 
 
-     {/* --- Layout with Sidebar + Products --- */}
+
+
+
+
+
+     {/* --- Layout with Categories + Products --- */}
 <div className="ecom-layout">
   
-  {/* Product Grid */}
-<main className="ecom-main">
-  {MOCK_CATEGORIES.filter(c => c.id !== "all").map((cat) => {
-    const productsInCat = allProducts.filter((p) => p.category.toLowerCase() === cat.name.toLowerCase());
-
-    if (productsInCat.length === 0) return null;
-
-    return (
-      <section key={cat.id} className="category-section">
-        {/* Category heading */}
-        <h2 className="category-heading">{cat.name}</h2>
-
-        {/* Category-specific mini offer carousel */}
-{/*         <div className="offer-carousel mini">
-          {OFFERS.map((offer, i) => (
-            <div key={offer.id} className={`offer-slide ${i === activeSlide ? "active" : ""}`}>
-              <img src={offer.img} alt={offer.text} />
-              <div className="offer-text">{offer.text}</div>
-            </div>
+  {selectedCat === "all" && (
+    <>
+      {/* Categories Sidebar */}
+      <aside className="categories-sidebar">
+        <h3 className="sidebar-title">Categories</h3>
+        <div className="categories-list">
+          {categories.map((c) => (
+            <button
+              key={c.id}
+              className={`category-item ${selectedCat === c.id ? "active" : ""}`}
+              onClick={() => setSelectedCat(c.id)}
+            >
+              {c.name}
+            </button>
           ))}
         </div>
- */}
-        {/* Product grid */}
-        <div className="ecom-grid">
-          {productsInCat.map((p, i) => (
-            <article key={p.id} className="ecom-card fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
-              <div className="card-inner">
-                <div className="ecom-thumb">
-                  <img src={`/public/products/${p.id}.jpg`} alt={p.name} />
-                </div>
-                <div className="ecom-info">
-                  <h4 className="ecom-name">{p.name}</h4>
-                  <div className="ecom-meta">
-                       <span className="original-price">₹{p.originalPrice}</span>{" "}
-                       <span className="discount-price">₹{p.price}</span>
-                    <span className="ecom-rate">★ {p.rating}</span>
-                  </div>
-                </div>
-                <button className="ecom-buy" onClick={() => handleBuyNow(p)}>
-                  Buy Now
-                </button>
+      </aside>
+      
+      {/* Categories Grid */}
+      <div className="categories-grid">
+    {categories.filter(c => c.id !== "all").map((c) => {
+      const productsInCat = allProducts.filter((p) => p.category === c.name);
+      if (productsInCat.length === 0) return null;
+      
+      return (
+        <div key={c.id} className="category-card">
+          <h3 className="category-card-title">{c.name}</h3>
+          <div className="category-products">
+            {productsInCat.slice(0, 1).map((p, i) => (
+              <article key={p.id} className="mini-card">
+                <img src={`/public/products/${p.id}.jpg`} alt={p.name} />
+                <h4>{p.name}</h4>
+                <div className="price">₹{p.price}</div>
+                <button onClick={() => handleBuyNow(p)}>Buy</button>
+              </article>
+            ))}
+          </div>
+          <button className="view-all-btn" onClick={() => setSelectedCat(c.id)}>
+            View All {productsInCat.length} Items
+          </button>
+        </div>
+      );
+    })}
+      </div>
+    </>
+  )}
+  
+  {selectedCat !== "all" && (
+    <main className="category-page">
+      <div className="category-header">
+        <button className="back-btn" onClick={() => setSelectedCat("all")}>
+          ← Back to Categories
+        </button>
+        <h2 className="category-page-title">
+          {categories.find(cat => cat.id === selectedCat)?.name || "Products"}
+        </h2>
+      </div>
+      <div className="category-grid">
+        {filteredProducts.map((p, i) => (
+          <article key={p.id} className="ecom-card fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
+            <div className="card-inner">
+              <div className="ecom-thumb">
+                <img src={`/public/products/${p.id}.jpg`} alt={p.name} />
               </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    );
-  })}
-</main>
+              <div className="ecom-info">
+                <h4 className="ecom-name">{p.name}</h4>
+                <div className="ecom-meta">
+                     <span className="original-price">₹{p.originalPrice}</span>{" "}
+                     <span className="discount-price">₹{p.price}</span>
+                  <span className="ecom-rate">★ {p.rating}</span>
+                </div>
+              </div>
+              <button className="ecom-buy" onClick={() => handleBuyNow(p)}>
+                Buy Now
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </main>
+  )}
 
 </div>
 
@@ -542,12 +593,31 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid #eee;
-  padding: 16px;
+  padding: 12px;
   background: #fff;
   text-align: center;
   position: relative;
   transition: all 0.2s ease;
-  min-height: 320px; /* 🔥 ensures same height */
+  min-height: 280px;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .ecom-card {
+    min-height: 240px;
+    max-width: 160px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ecom-card {
+    min-height: 200px;
+    max-width: 140px;
+    padding: 6px;
+  }
 }
 
 /* Fade-in stagger */
@@ -561,13 +631,14 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 /* Inner wrapper */
 .card-inner {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 1s ease, box-shadow 0.3s ease;
   transform-style: preserve-3d;
-
-  /* ✅ always reset */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   transform: rotateY(0deg);
 }
 
@@ -589,9 +660,21 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 
 .ecom-thumb img {
   max-width: 100%;
-  height: 200px; /* 🔥 fixed image height */
+  height: 140px;
   object-fit: contain;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .ecom-thumb img {
+    height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ecom-thumb img {
+    height: 80px;
+  }
 }
 
 .ecom-info {
@@ -602,10 +685,25 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 }
 
 .ecom-name {
-  font-size: 15px;
-  margin: 8px 0;
+  font-size: 13px;
+  margin: 6px 0;
   font-weight: 500;
-  flex-grow: 1; /* balances long vs short names */
+  flex-grow: 1;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .ecom-name {
+    font-size: 11px;
+    margin: 4px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .ecom-name {
+    font-size: 10px;
+    margin: 3px 0;
+  }
 }
 
 .ecom-meta {
@@ -614,13 +712,13 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 
 .ecom-buy {
   margin-top: auto;
-  padding: 8px 14px;
+  padding: 6px 12px;
   border: none;
   background: #111;
   color: #fff;
   cursor: pointer;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .ecom-buy:hover {
@@ -840,9 +938,10 @@ body {
 /* Product grid responsive */
 .ecom-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
   padding: 16px;
+  justify-items: center;
 }
 
 /* Desktop layout */
@@ -953,54 +1052,218 @@ body {
 
 }
 
-/* Categories Section */
-.categories-bar {
-  width: 100%;
-  background: linear-gradient(90deg, #2e003e, #3a1c1c, #000);
-  padding: 12px 20px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+/* Categories Grid */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
 }
 
-.categories-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: px;
+.category-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+}
+
+.category-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
   background: linear-gradient(90deg, #8B4513, #FFD700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
 }
 
-/* Category Chips */
-.categories-list {
+.category-products {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 13px;
+  margin-bottom: 16px;
 }
 
-.category-chip {
-  padding: 10px 18px;
-  border-radius: 24px;
-  border: 1px solid rgba(0,0,0,0.1);  /* subtle default border */
-  background: #ffffff;                /* 🔥 white background like product cards */
-  color: #333;                        /* dark text for readability */
+.mini-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+
+.mini-card img {
+  width: 100%;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.mini-card h4 {
+  font-size: 11px;
+  margin: 4px 0;
+  line-height: 1.2;
+}
+
+.mini-card .price {
+  font-size: 12px;
   font-weight: 600;
-  font-size: 15px;
+  color: #e75480;
+  margin: 2px 0;
+}
+
+.mini-card button {
+  background: linear-gradient(135deg, #e75480, #c084fc);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.view-all-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #8B4513, #D4AF37);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.view-all-btn:hover {
+  transform: scale(1.02);
+}
+
+.ecom-layout {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  align-items: flex-start;
+}
+
+/* Categories Sidebar */
+.categories-sidebar {
+  width: 250px;
+  background: linear-gradient(160deg, #000000, #3a1c1c, #2e003e, #1a001f);
+  background-size: 400% 400%;
+  animation: sidebarGradient 10s ease infinite;
+  border-radius: 16px;
+  padding: 20px;
+  height: fit-content;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  z-index: 999;
+  overflow: hidden;
+  overflow-x: hidden;
+  flex-shrink: 0;
+}
+
+.categories-list {
+  height: calc(100% - 60px);
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-title {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  background: linear-gradient(90deg, #8B4513, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
+.category-item {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  margin-bottom: 0;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  color: #f0f0f0;
+  font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  text-align: center;
 }
 
-/* Hover + Active state */
-.category-chip:hover,
-.category-chip.active {
-  background: linear-gradient(90deg, #fff8dc, #ffe4b5, #ffdab9); /* soft gradient */
-  color: #000;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  border: 2px solid #FFD700;  /* 🔥 gold border highlight */
+.category-item:hover,
+.category-item.active {
+  background: linear-gradient(135deg, #e75480, #c084fc);
+  color: #fff;
+  transform: translateX(6px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(231,84,128,0.4);
+}
+
+.categories-grid {
+  flex: 1;
+}
+
+/* Category Page */
+.category-page {
+  width: 100%;
+  padding: 20px;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.back-btn {
+  background: linear-gradient(135deg, #8B4513, #D4AF37);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.back-btn:hover {
+  transform: scale(1.05);
+}
+
+.category-page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #8B4513, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .categories-sidebar {
+    display: none;
+  }
+  
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .category-section {
@@ -1300,15 +1563,31 @@ body {
   }
 }
 
-/* desktop: 3 columns (can increase to 4 if you want) */
-@media (min-width: 1025px) {
+/* Responsive grid columns */
+@media (min-width: 1200px) {
   .ecom-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, 1fr);
   }
+}
 
-  /* If you have a fixed category panel on desktop, keep space for it here.
-     If you prefer the grid truly centered on the full page, remove this rule. */
-  .ecom-main { margin-left: 0; } /* set to 0 so grid is centered. If you need left panel, change to margin-left: 200px; */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .ecom-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .ecom-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 599px) {
+  .ecom-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
 }
 
 html, body, #root, .app-wrapper {
@@ -1658,6 +1937,126 @@ margin-bottom:20px;
   color: #d97706; /* gold/orange tone to match your theme */
   font-weight: bold;
   font-size: 16px;
+}
+
+/* Fixed Hamburger Button */
+.hamburger-btn-fixed {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1500;
+  display: none;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 8px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.hamburger-btn-fixed:hover {
+  opacity: 1;
+}
+
+.hamburger-btn-fixed span {
+  width: 20px;
+  height: 2px;
+  background: #fff;
+  margin: 2px 0;
+  transition: 0.3s;
+  border-radius: 1px;
+}
+
+@media (max-width: 768px) {
+  .hamburger-btn-fixed {
+    display: flex;
+  }
+  
+  .ecom-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .ecom-search-wrap {
+    width: 100%;
+  }
+  
+  .ecom-input {
+    width: 100%;
+    font-size: 14px;
+  }
+}
+
+/* Mobile Categories Overlay */
+.mobile-categories-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.mobile-categories-panel {
+  width: 280px;
+  height: 100%;
+  background: linear-gradient(160deg, #000000, #3a1c1c, #2e003e, #1a001f);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.panel-header h3 {
+  color: #fff;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.mobile-categories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-category-item {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  color: #f0f0f0;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.mobile-category-item:hover,
+.mobile-category-item.active {
+  background: linear-gradient(135deg, #e75480, #c084fc);
+  color: #fff;
+  transform: translateX(6px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(231,84,128,0.4);
 }
 
               
