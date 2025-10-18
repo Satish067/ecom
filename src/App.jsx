@@ -124,14 +124,12 @@ useEffect(() => {
 
   // Buy now — enforces size when required, opens WhatsApp
 const handleBuyNow = (product, selectedSize) => {
-  const msg = `Hi, I want to buy a product:\n${product.name}\n${
-    selectedSize ? `Size: ${selectedSize}\n` : ""
-  }Price: ₹${product.price}`;
+  const message = `Hi, I want to buy: ${product.name}${selectedSize ? ` (Size: ${selectedSize})` : ""} - Price: ₹${product.price}`;
   
-  const encodedMsg = encodeURIComponent(msg);
-  const phoneNumber = "916362141143"; // ✅ no '+' before the number in wa.me
-
-  window.open(`https://wa.me/${phoneNumber}?text=${encodedMsg}`, "_blank");
+  const phoneNumber = "916362141143";
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  
+  window.open(whatsappUrl, "_blank");
 };
 
 
@@ -307,7 +305,7 @@ const handleBuyNow = (product, selectedSize) => {
     <main className="category-page">
       <div className="category-header">
         <button className="back-btn" onClick={() => setSelectedCat("all")}>
-          ← Back to Categories
+          ←
         </button>
         <h2 className="category-page-title">
           {categories.find(cat => cat.id === selectedCat)?.name || "Products"}
@@ -347,6 +345,63 @@ const handleBuyNow = (product, selectedSize) => {
           ↑
         </button>
       )}
+      
+      {/* Footer */}
+      <footer className="luxury-footer">
+        <div className="footer-content">
+          <div className="footer-section">
+            <h3>LUXURY HUB</h3>
+            <ul>
+              <li>Who We Are</li>
+              <li>Join Our Team</li>
+              <li>Terms & Conditions</li>
+              <li>We Respect Your Privacy</li>
+              <li>Fees & Payments</li>
+              <li>Returns & Refunds Policy</li>
+              <li>Promotions Terms & Conditions</li>
+            </ul>
+          </div>
+          
+          <div className="footer-section">
+            <h3>HELP</h3>
+            <ul>
+              <li>Track Your Order</li>
+              <li>Frequently Asked Questions</li>
+              <li>Returns</li>
+              <li>Cancellations</li>
+              <li>Payments</li>
+              <li>Customer Care</li>
+              <li>How Do I Redeem My Coupon?</li>
+            </ul>
+          </div>
+          
+          <div className="footer-section">
+            <h3>SHOP BY</h3>
+            <ul>
+              <li>All</li>
+              <li>Men</li>
+              <li>Women</li>
+              <li>Kids</li>
+              <li>Indie</li>
+              <li>Stores</li>
+              <li>New Arrivals</li>
+              <li>Brand Directory</li>
+              <li>Home</li>
+              <li>Collections</li>
+            </ul>
+          </div>
+          
+          <div className="footer-section">
+            <h3>FOLLOW US</h3>
+            <ul>
+              <li>Facebook</li>
+              <li>Instagram</li>
+              <li>Twitter</li>
+              <li>Pinterest</li>
+            </ul>
+          </div>
+        </div>
+      </footer>
     </div>
     </div>
   );
@@ -370,16 +425,17 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 .offer-carousel {
   position: relative;
   width: 100%;
-  height: 260px;
+  height: 180px;
   margin-bottom: 20px;
   overflow: hidden;
   border-radius: 16px;
   box-shadow: var(--shadow);
+  max-width: 100%;
 }
 
 @media (max-width: 768px) {
   .offer-carousel {
-    height: 150px;   /* ↓ reduce the height for mobile view */
+    height: 120px;   /* ↓ reduce the height for mobile view */
   }
 }
 
@@ -408,12 +464,14 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0,0,0,0.6);
+  background: linear-gradient(135deg, rgba(139,69,19,0.9), rgba(212,175,55,0.9));
   color: #fff;
   padding: 10px 20px;
   border-radius: 8px;
   font-size: 20px;
   font-weight: bold;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 12px rgba(139,69,19,0.3);
 }
 
 /* Sidebar - Animated Dark Gradient */
@@ -462,10 +520,10 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 
 .ecom-sidebar li:hover,
 .ecom-sidebar li.active {
-  background: linear-gradient(135deg, #e75480, #c084fc);
+  background: linear-gradient(135deg, #8B4513, #D4AF37);
   color: #fff;
-  transform: translateX(6px) scale(1.05);
-  box-shadow: 0 6px 16px rgba(231,84,128,0.5);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(139,69,19,0.5);
 }
   .ecom-logo-link {
   display: flex;
@@ -474,8 +532,8 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 }
 
 .ecom-logo {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
   border-radius: 12px;
   cursor: pointer;
@@ -829,7 +887,7 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
   padding: 10px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #e75480, #c084fc);
+  background: linear-gradient(135deg, #8B4513, #D4AF37);
   color: #fff;
   font-size: 15px;
   font-weight: 600;
@@ -841,7 +899,7 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 
 .ecom-buy:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(231,84,128,0.4);
+  box-shadow: 0 8px 20px rgba(139,69,19,0.4);
 }
   .ecom-title {
   font-size: 28px;
@@ -871,29 +929,22 @@ body, .ecom-root, .ecom-sidebar, .ecom-main,
 }
 
 /* Animated gradient background (light blue, green, pink) */
-/* Global Page Background - Animated Dark Gradient */
-/* Global Page Background - Animated Gradient + Diamond Texture */
-/* Base Gradient (already in your code) */
+/* Global Page Background - Premium Dark */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
   min-height: 100vh;
-  background: linear-gradient(-45deg, #000000, #3a1c1c, #2e003e, #1a001f);
-  background-size: 400% 400%;
-  animation: gradientShift 12s ease infinite;
+  background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
   position: relative;
   overflow-x: hidden;
 }
 
-
-/* Whole app wrapper with animated gradient */
+/* Whole app wrapper with premium dark background */
 .app-wrapper {
   min-height: 100vh;
   position: relative;
-  background: linear-gradient(-45deg, #000000, #3a1c1c, #2e003e, #1a001f);
-  background-size: 400% 400%;
-  animation: gradientShift 12s ease infinite;
+  background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
   overflow-x: hidden;
 }
 
@@ -1055,9 +1106,10 @@ body {
 /* Categories Grid */
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   padding: 20px;
+  max-width: 100%;
 }
 
 .category-card {
@@ -1109,20 +1161,11 @@ body {
 }
 
 .mini-card .price {
-  font-size: 12px;
-  font-weight: 600;
-  color: #e75480;
-  margin: 2px 0;
+  display: none;
 }
 
 .mini-card button {
-  background: linear-gradient(135deg, #e75480, #c084fc);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 10px;
-  cursor: pointer;
+  display: none;
 }
 
 .view-all-btn {
@@ -1151,13 +1194,13 @@ body {
 /* Categories Sidebar */
 .categories-sidebar {
   width: 250px;
-  background: linear-gradient(160deg, #000000, #3a1c1c, #2e003e, #1a001f);
-  background-size: 400% 400%;
-  animation: sidebarGradient 10s ease infinite;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 20px;
   height: fit-content;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   z-index: 999;
   overflow: hidden;
   overflow-x: hidden;
@@ -1173,7 +1216,7 @@ body {
 }
 
 .sidebar-title {
-  color: #fff;
+  color: #ffffff;
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 20px;
@@ -1192,21 +1235,22 @@ body {
   margin-bottom: 0;
   border: none;
   border-radius: 12px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: #f0f0f0;
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .category-item:hover,
 .category-item.active {
-  background: linear-gradient(135deg, #e75480, #c084fc);
+  background: linear-gradient(135deg, #8B4513, #D4AF37);
   color: #fff;
-  transform: translateX(6px) scale(1.02);
-  box-shadow: 0 4px 12px rgba(231,84,128,0.4);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(139,69,19,0.4);
 }
 
 .categories-grid {
@@ -1248,6 +1292,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;
+  text-align: center;
 }
 
 .category-grid {
@@ -1262,7 +1307,17 @@ body {
   }
   
   .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+    overflow: visible;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-grid {
     grid-template-columns: 1fr;
+    overflow: visible;
+    width: 100%;
   }
 }
 
@@ -1596,9 +1651,7 @@ html, body, #root, .app-wrapper {
 }
 
 body {
-  background: linear-gradient(-45deg, #000000, #3a1c1c, #2e003e, #1a001f);
-  background-size: 400% 400%;
-  animation: gradientShift 12s ease infinite;
+  background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
@@ -1612,19 +1665,20 @@ body {
 
 
 /* Layout */
-.ecom-root{max-width:var(--container); margin:0 auto; padding:18px 16px 48px}
+.ecom-root{max-width:100%; margin:0; padding:18px 16px 48px; width:100%; overflow-x:hidden}
 .ecom-header{
 margin-bottom:20px;
   display:flex; justify-content:space-between; align-items:center;
-  background:#fff; border:1px solid var(--border); border-radius:16px; padding:12px 16px;
+  background:#fff; border:1px solid var(--border); border-radius:16px; padding:30px 40px;
   box-shadow:var(--shadow); position:relative; z-index:1000; transition: all .3s ease;
+  min-height:150px; gap:20px; width:100%; box-sizing:border-box;
 }
 .ecom-header.sticky{position:sticky; top:0; animation:slideDown .4s ease}
 @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
 .ecom-brand{display:flex; gap:12px; align-items:center}
 .ecom-logo{font-size:28px; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:linear-gradient(135deg,#fff,#fff0f6); box-shadow:0 6px 16px rgba(0,0,0,.06)}
-.ecom-title{margin:0; font-size:20px; color:var(--accent)}
-.ecom-sub{margin:0; font-size:12px; color:var(--muted)}
+.ecom-title{margin:0; font-size:32px; color:var(--accent)}
+.ecom-sub{margin:0; font-size:16px; color:var(--muted)}
 
 .ecom-search-wrap{display:flex; align-items:center; gap:8px}
 .ecom-input{padding:10px; border-radius:12px; border:1px solid var(--border); width:320px; outline:none}
@@ -1679,7 +1733,7 @@ margin-bottom:20px;
 /* Buy button */
 .ecom-buy{
   width:100%; padding:10px; border:none; border-radius:12px;
-  background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff; cursor:pointer; font-weight:600;
+  background:linear-gradient(135deg, #8B4513, #D4AF37); color:#fff; cursor:pointer; font-weight:600;
   transition:transform .12s ease, opacity .12s ease;
 }
 .ecom-buy:hover{transform:scale(1.02); opacity:.98}
@@ -1708,16 +1762,16 @@ margin-bottom:20px;
 /* Back to top: pulsing glow */
 .back-to-top{
   position:fixed; bottom:22px; right:22px;
-  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  background:linear-gradient(135deg, #8B4513, #D4AF37);
   color:#fff; border:none; border-radius:50%; width:52px; height:52px; font-size:22px; cursor:pointer;
   box-shadow:0 8px 30px rgba(0,0,0,.12); z-index:2000;
   display:flex; align-items:center; justify-content:center;
   animation:backPulse 2s infinite;
 }
 @keyframes backPulse{
-  0%{transform:scale(1); box-shadow:0 8px 30px rgba(231,84,128,.22)}
-  50%{transform:scale(1.06); box-shadow:0 12px 36px rgba(231,84,128,.28)}
-  100%{transform:scale(1); box-shadow:0 8px 30px rgba(231,84,128,.22)}
+  0%{transform:scale(1); box-shadow:0 8px 30px rgba(139,69,19,.22)}
+  50%{transform:scale(1.06); box-shadow:0 12px 36px rgba(139,69,19,.28)}
+  100%{transform:scale(1); box-shadow:0 8px 30px rgba(139,69,19,.22)}
 }
 
 /* small responsive tweaks */
@@ -2005,9 +2059,11 @@ margin-bottom:20px;
 .mobile-categories-panel {
   width: 280px;
   height: 100%;
-  background: linear-gradient(160deg, #000000, #3a1c1c, #2e003e, #1a001f);
+  background: rgba(15, 15, 35, 0.95);
+  backdrop-filter: blur(10px);
   padding: 20px;
   overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .panel-header {
@@ -2018,14 +2074,14 @@ margin-bottom:20px;
 }
 
 .panel-header h3 {
-  color: #fff;
+  color: #ffffff;
   margin: 0;
 }
 
 .close-btn {
   background: none;
   border: none;
-  color: #fff;
+  color: #ffffff;
   font-size: 24px;
   cursor: pointer;
 }
@@ -2042,21 +2098,81 @@ margin-bottom:20px;
   padding: 16px 20px;
   border: none;
   border-radius: 12px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: #f0f0f0;
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobile-category-item:hover,
 .mobile-category-item.active {
-  background: linear-gradient(135deg, #e75480, #c084fc);
+  background: linear-gradient(135deg, #8B4513, #D4AF37);
   color: #fff;
-  transform: translateX(6px) scale(1.02);
-  box-shadow: 0 4px 12px rgba(231,84,128,0.4);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(139,69,19,0.4);
+}
+
+/* Footer */
+.luxury-footer {
+  background: rgba(15, 15, 35, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 60px;
+  padding: 40px 20px 20px;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section h3 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, #8B4513, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section li {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.footer-section li:hover {
+  color: #D4AF37;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
 }
 
               
