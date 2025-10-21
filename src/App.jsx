@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MOCK_PRODUCTS from "./mock_products";
+import MOCK_PRODUCTS from "./MOCK_PRODUCTS.js";
 import offer1 from "./assets/offer1.jpg";
 import offer2 from "./assets/offer2.jpg";
 import offer3 from "./assets/offer3.jpg";
