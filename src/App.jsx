@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MOCK_PRODUCTS from "./MOCK_PRODUCTS.js";
+import brandlogo from "./assets/brand-logo.png";
 import offer1 from "./assets/offer1.jpg";
 import offer2 from "./assets/offer2.jpg";
 import offer3 from "./assets/offer3.jpg";
@@ -181,7 +182,7 @@ const handleBuyNow = (product, selectedSize) => {
   <div className="ecom-brand">
     {/* Brand Logo (clickable) */}
     <a href="/" className="ecom-logo-link">
-      <img src="/src/assets/brand-logo.png" alt="StyleMart Logo" className="ecom-logo" />
+      <img src={brandlogo} alt="StyleMart Logo" className="ecom-logo" />
     </a>
 
     {/* Brand Name */}
@@ -284,7 +285,7 @@ const handleBuyNow = (product, selectedSize) => {
           <div className="category-products">
             {productsInCat.slice(0, 1).map((p, i) => (
               <article key={p.id} className="mini-card">
-                <img src={`/public/products/${p.id}.jpg`} alt={p.name} />
+                <img src={`/products/${p.id}.jpg`} alt={p.name} />
                 <h4>{p.name}</h4>
                 <div className="price">₹{p.price}</div>
                 <button onClick={() => handleBuyNow(p)}>Buy</button>
@@ -316,7 +317,7 @@ const handleBuyNow = (product, selectedSize) => {
           <article key={p.id} className="ecom-card fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
             <div className="card-inner">
               <div className="ecom-thumb">
-                <img src={`/public/products/${p.id}.jpg`} alt={p.name} />
+                <img src={`/products/${p.id}.jpg`} alt={p.name} />
               </div>
               <div className="ecom-info">
                 <h4 className="ecom-name">{p.name}</h4>
