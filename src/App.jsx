@@ -1111,6 +1111,8 @@ body {
   gap: 20px;
   padding: 20px;
   max-width: 100%;
+  justify-items: center;
+  margin: 0 auto;
 }
 
 .category-card {
@@ -1311,6 +1313,9 @@ body {
     grid-template-columns: repeat(2, 1fr);
     overflow: visible;
     width: 100%;
+    justify-items: center;
+    padding: 10px;
+    gap: 15px;
   }
 }
 
@@ -2054,17 +2059,20 @@ margin-bottom:20px;
   background: rgba(0, 0, 0, 0.5);
   z-index: 2000;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
 }
 
 .mobile-categories-panel {
-  width: 280px;
-  height: 100%;
+  width: 90%;
+  max-width: 320px;
+  max-height: 80vh;
   background: rgba(15, 15, 35, 0.95);
   backdrop-filter: blur(10px);
   padding: 20px;
   overflow-y: auto;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .panel-header {
