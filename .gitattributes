@@ -1,0 +1,2 @@
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.ubuntu@13.232.74.157 filter=lfs diff=lfs merge=lfs -text
